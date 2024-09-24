@@ -54,7 +54,6 @@ const LoginPage = () => {
       setLoading(true);
       const endpoint = UrlService.getLogin();
       const data = { mail: email, password };
-      console.log("Login data:", data);
       const res = await axiosService.instance.post(endpoint, data);
       const successLogin = res.data as TokenResponse;
       ToastService.success(successLogin.message);

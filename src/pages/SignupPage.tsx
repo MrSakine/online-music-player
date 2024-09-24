@@ -1,6 +1,11 @@
 import { Button, FormControl, Link, TextField } from "@mui/material";
 import React, { useState } from "react";
 import TogglePassword from "../components/TogglePassword";
+import { useNavigate } from "react-router-dom";
+import { useAxios } from "../AxiosContextLoader";
+import { UrlService } from "../services/UrlService";
+import { BaseResponse } from "../responses/BaseResponse";
+import { ToastService } from "../services/ToastService";
 
 const SignupPage = () => {
   const [fullname, setFullname] = useState("");
@@ -10,6 +15,9 @@ const SignupPage = () => {
   const [fullnameError, setFullnameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const axiosService = useAxios();
+  const navigate = useNavigate();
 
   const validateFullname = (name: string) => {
     return name.trim().length >= 2;
@@ -54,8 +62,22 @@ const SignupPage = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      if (fullnameError || emailError || passwordError) return;
+      e.preventDefault();
+      setLoading(true);
+      const endpoint = UrlService.getSignUp();
+      const data = { fullname, mail: email, password };
+      const res = await axiosService.instance.post(endpoint, data);
+      const successSignUp = res.data as BaseResponse;
+      ToastService.success(successSignUp.message);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -114,8 +136,15 @@ const SignupPage = () => {
         />
       </FormControl>
       <div className="submit-btn">
-        <Button variant="outlined" size="large" type="submit">
-          Submit
+        <Button
+          variant="outlined"
+          size="large"
+          type="submit"
+          disabled={
+            !!fullnameError || !!emailError || !!passwordError || loading
+          }
+        >
+          {loading ? "Submitting..." : "Submit"}
         </Button>
       </div>
       <div className="notice">
