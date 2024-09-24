@@ -10,4 +10,12 @@ export class UrlService {
   static getSignUp() {
     return `${this.getBase()}/signup`;
   }
+
+  static getAlbums() {
+    return `${this.getBase()}/music/albums`;
+  }
+
+  static getSingles() {
+    return `${this.getBase()}/music/singles`;
+  }
 }

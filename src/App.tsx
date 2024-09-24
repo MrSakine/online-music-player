@@ -5,7 +5,7 @@ import {
   Routes,
 } from "react-router-dom";
 import "./App.css";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import LoginPage from "./pages/LoginPage";
 import SignupPage from "./pages/SignupPage";
 import MusicPage from "./pages/MusicPage";

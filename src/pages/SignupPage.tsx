@@ -1,11 +1,12 @@
 import { Button, FormControl, Link, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TogglePassword from "../components/TogglePassword";
 import { useNavigate } from "react-router-dom";
 import { useAxios } from "../AxiosContextLoader";
 import { UrlService } from "../services/UrlService";
 import { BaseResponse } from "../responses/BaseResponse";
 import { ToastService } from "../services/ToastService";
+import { LocalStorageService } from "../services/LocalStorageService";
 
 const SignupPage = () => {
   const [fullname, setFullname] = useState("");
@@ -16,6 +17,7 @@ const SignupPage = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [signUp, setSignUp] = useState(false);
   const axiosService = useAxios();
   const navigate = useNavigate();
 
@@ -71,14 +73,20 @@ const SignupPage = () => {
       const data = { fullname, mail: email, password };
       const res = await axiosService.instance.post(endpoint, data);
       const successSignUp = res.data as BaseResponse;
-      ToastService.success(successSignUp.message);
-      navigate("/login");
+      ToastService.success(successSignUp.message, 21);
+      setSignUp(true);
+      // navigate("/login");
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const token = LocalStorageService.getToken();
+    if (token || signUp) navigate("/music");
+  }, [navigate, signUp]);
 
   return (
     <form className="signup-page" onSubmit={handleSubmit}>

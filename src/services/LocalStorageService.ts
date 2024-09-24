@@ -6,7 +6,11 @@ class LocalStorageService {
   }
 
   static getToken() {
-    window.localStorage.getItem(TOKEN_KEY);
+    return window.localStorage.getItem(TOKEN_KEY);
+  }
+
+  static deleteToken() {
+    window.localStorage.removeItem(TOKEN_KEY);
   }
 }
 
