@@ -1,5 +1,6 @@
 import { Button, FormControl, Link, TextField } from "@mui/material";
 import React, { useState } from "react";
+import TogglePassword from "../components/TogglePassword";
 
 const SignupPage = () => {
   const [fullname, setFullname] = useState("");
@@ -11,7 +12,7 @@ const SignupPage = () => {
   const [passwordError, setPasswordError] = useState("");
 
   const validateFullname = (name: string) => {
-    return name.trim().length >= 2; // Check if the name is not empty
+    return name.trim().length >= 2;
   };
 
   const handleFullnameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -49,7 +50,7 @@ const SignupPage = () => {
     }
   };
 
-  const handleClickShowPassword = () => {
+  const handleTogglePassword = () => {
     setShowPassword((prev) => !prev);
   };
 
@@ -99,18 +100,18 @@ const SignupPage = () => {
           helperText={passwordError}
           error={!!passwordError}
           autoComplete="off"
+          slotProps={{
+            input: {
+              endAdornment: (
+                <TogglePassword
+                  showPassword={showPassword}
+                  onToggle={handleTogglePassword}
+                />
+              ),
+            },
+          }}
           required
         />
-        <p
-          style={{
-            cursor: "pointer",
-            marginTop: "5px",
-            display: "block",
-          }}
-          onClick={handleClickShowPassword}
-        >
-          {showPassword ? "Hide password" : "Show password"}
-        </p>
       </FormControl>
       <div className="submit-btn">
         <Button variant="outlined" size="large" type="submit">

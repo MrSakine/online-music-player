@@ -1,5 +1,12 @@
 import { Button, FormControl, Link, TextField } from "@mui/material";
 import React, { useState } from "react";
+import TogglePassword from "../components/TogglePassword";
+import { useAxios } from "../AxiosContextLoader";
+import { UrlService } from "../services/UrlService";
+import { TokenResponse } from "../responses/TokenResponse";
+import { LocalStorageService } from "../services/LocalStorageService";
+import { useNavigate } from "react-router-dom";
+import { ToastService } from "../services/ToastService";
 
 const LoginPage = () => {
   const [email, setEmail] = useState("");
@@ -7,7 +14,9 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
+  const [loading, setLoading] = useState(false);
+  const axiosService = useAxios();
+  const navigate = useNavigate();
 
   const validateEmail = (email: string) => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -34,13 +43,28 @@ const LoginPage = () => {
     }
   };
 
-  const handleClickShowPassword = () => {
+  const handleTogglePassword = () => {
     setShowPassword((prev) => !prev);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log("Login data:", { email, password });
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    try {
+      if (emailError || passwordError) return;
+      e.preventDefault();
+      setLoading(true);
+      const endpoint = UrlService.getLogin();
+      const data = { mail: email, password };
+      console.log("Login data:", data);
+      const res = await axiosService.instance.post(endpoint, data);
+      const successLogin = res.data as TokenResponse;
+      ToastService.success(successLogin.message);
+      LocalStorageService.saveToken(successLogin.accessToken);
+      navigate('/music');
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -73,22 +97,27 @@ const LoginPage = () => {
           onChange={handlePasswordChange}
           helperText={passwordError}
           error={!!passwordError}
+          slotProps={{
+            input: {
+              endAdornment: (
+                <TogglePassword
+                  showPassword={showPassword}
+                  onToggle={handleTogglePassword}
+                />
+              ),
+            },
+          }}
           required
         />
-        <p
-          style={{
-            cursor: "pointer",
-            marginTop: "5px",
-            display: "block",
-          }}
-          onClick={handleClickShowPassword}
-        >
-          {showPassword ? "Hide password" : "Show password"}
-        </p>
       </FormControl>
       <div className="submit-btn">
-        <Button variant="outlined" size="large" type="submit">
-          Submit
+        <Button
+          variant="outlined"
+          size="large"
+          type="submit"
+          disabled={!!emailError || !!passwordError || loading}
+        >
+          {loading ? "Submitting..." : "Submit"}
         </Button>
       </div>
       <div className="notice">
