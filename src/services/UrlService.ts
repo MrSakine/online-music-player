@@ -18,4 +18,8 @@ export class UrlService {
   static getSingles() {
     return `${this.getBase()}/music/singles`;
   }
+
+  static getProfile() {
+    return `${this.getBase()}/profile`;
+  }
 }

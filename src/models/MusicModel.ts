@@ -3,4 +3,5 @@ export interface MusicModel {
   title: string;
   poster: string;
   total: number;
+  duration: number;
 }

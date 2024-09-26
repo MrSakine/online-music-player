@@ -1,5 +1,4 @@
 import {
-  Navigate,
   Route,
   BrowserRouter as Router,
   Routes,
@@ -13,6 +12,7 @@ import { ThemeProvider } from "@mui/material";
 import customTheme from "./customTheme";
 import { AxiosProvider } from "./AxiosContext";
 import { ToastContainer } from "react-toastify";
+import HomePage from "./pages/HomePage";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
       <AxiosProvider>
         <Router>
           <Routes>
-            <Route path="/" element={<Navigate to="/login" />} />
+            <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />}></Route>
             <Route path="/signup" element={<SignupPage />}></Route>
             <Route path="/music" element={<MusicPage />}></Route>

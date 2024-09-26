@@ -70,7 +70,7 @@ const LoginPage = () => {
 
   useEffect(() => {
     const token = LocalStorageService.getToken();
-    if (token || loggedIn) navigate("/music");
+    if (token || loggedIn) navigate("/music", { replace: true });
   }, [navigate, loggedIn]);
 
   return (
