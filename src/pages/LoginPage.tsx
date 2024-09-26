@@ -1,5 +1,5 @@
 import { Button, FormControl, Link, TextField } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TogglePassword from "../components/TogglePassword";
 import { useAxios } from "../AxiosContextLoader";
 import { UrlService } from "../services/UrlService";
@@ -15,6 +15,7 @@ const LoginPage = () => {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
   const axiosService = useAxios();
   const navigate = useNavigate();
 
@@ -56,15 +57,21 @@ const LoginPage = () => {
       const data = { mail: email, password };
       const res = await axiosService.instance.post(endpoint, data);
       const successLogin = res.data as TokenResponse;
-      ToastService.success(successLogin.message);
+      ToastService.success(successLogin.message, 2);
       LocalStorageService.saveToken(successLogin.accessToken);
-      navigate('/music');
+      setLoggedIn(true);
+      // navigate("/music");
     } catch (error) {
       console.log(error);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const token = LocalStorageService.getToken();
+    if (token || loggedIn) navigate("/music", { replace: true });
+  }, [navigate, loggedIn]);
 
   return (
     <form className="login-page" onSubmit={handleSubmit}>

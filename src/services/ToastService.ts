@@ -4,19 +4,19 @@ const TOAST_OPTIONS = {
   autoClose: 5000,
   hideProgressBar: false,
   closeOnClick: true,
-  pauseOnHover: true,
-  draggable: true,
+  // pauseOnHover: true,
+  // draggable: true,
   theme: "light",
   transition: Bounce,
 };
 
 export class ToastService {
-  static success(message: string) {
-    toast.success(message, TOAST_OPTIONS);
+  static success(message: string, id: number) {
+    toast.success(message, { ...TOAST_OPTIONS, toastId: id });
   }
 
-  static error(message: string) {
-    toast.error(message, TOAST_OPTIONS);
+  static error(message: string, id: number) {
+    toast.error(message, { ...TOAST_OPTIONS, toastId: id });
   }
 
   static info(message: string) {
