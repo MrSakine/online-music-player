@@ -16,7 +16,12 @@ export default class AxiosService {
   }
 
   setup() {
-    const instance = axios.create();
+    const instance = axios.create({
+      headers: {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json",
+      },
+    });
 
     instance.interceptors.request.use(
       (req) => this.requestInterceptor(req),
