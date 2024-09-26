@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: online-music-player
+    env: node
+    buildCommand: npm install
+    startCommand: npm run start:prod
+    autoDeploy: true
+    plan: starter
+    region: oregon
+    healthCheckPath: /api/v1/health
